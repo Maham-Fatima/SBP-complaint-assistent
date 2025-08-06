@@ -1,1 +1,2 @@
-
+Place the backend folder inside XAMPP
+Correct the QR code address based on phpqrcode folder location
