@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complaint Bot</title>
+  <style>
+    :root {
+      --primary-color: #194224;
+      --secondary-color: #2a7a3f;
+      --bot-bubble: #EBD598;
+      --user-bubble: #98D260;
+      --send-button-color: #194224;
+      --mic-button-color: #98D260;
+      --white: #ffffff;
+      --chat-container-width: min(90vw, 650px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--primary-color);
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 0 20px;
+    }
+
+    /* Header section */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: var(--chat-container-width);
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+
+    /* Logo ellipse */
+    .logo-wrapper {
+      background-color: white;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: -10px;
+    }
+
+    .logo {
+      width: 120px;
+      height: auto;
+    }
+
+    h1 {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 3.75rem !important;
+      margin: 5px 0 !important;
+      color: var(--white);
+      text-align: center;
+      line-height: 1.2;
+      ;
+    }
+
+    /* Main chat container */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: calc(100vh - 180px);
+      max-width: var(--chat-container-width);
+    }
+
+    .chat-container {
+      background-color: var(--white);
+      border-radius: 20px;
+      width: 100%;
+      height: 100%;
+      width: min(90vw, 715px);
+      /* 90% of viewport width, max 1200px */
+      height: min(80vh, 390px);
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 10px;
+      margin-bottom: 15px;
+      scroll-behavior: smooth;
+    }
+
+    .bubble-row {
+      display: flex;
+      margin: 12px 0;
+      width: 100%;
+    }
+
+    .bubble-row.user {
+      justify-content: flex-end;
+    }
+
+    .bubble-row.bot {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      display: inline-block;
+      padding: 12px 18px;
+      font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+      line-height: 1.5;
+      color: #000;
+      max-width: 80%;
+      min-width: 100px;
+      width: fit-content;
+      text-align: left;
+      word-break: break-word;
+      border-radius: 18px;
+      position: relative;
+    }
+
+    .bubble.rtl {
+      direction: rtl;
+      text-align: right;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+
+    .bubble-row.user .bubble {
+      background-color: var(--user-bubble);
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble-row.bot .bubble {
+      background-color: var(--bot-bubble);
+      border-bottom-left-radius: 4px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      flex-shrink: 0;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    .input-area {
+      flex-grow: 1;
+      border: 1px solid #ccc;
+      background-color: #efeded;
+      border-radius: 25px;
+      padding: 10px 20px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .circle-button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--secondary-color);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .send-btn {
+      background-color: var(--send-button-color);
+    }
+
+    .send-btn:hover {
+      background-color: #0C2413;
+      /* darker shade on hover */
+      transform: scale(1.05);
+    }
+
+    .mic-btn {
+      background-color: var(--mic-button-color);
+    }
+
+    .mic-btn:hover {
+      background-color: #7abf4e;
+      /* darker shade on hover */
+      transform: scale(1.05);
+    }
+
+    .circle-button svg {
+      fill: var(--white);
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    h1 {
+      font-size: 4rem;
+      /* 6 × 16px = 96px */
+      font-weight: 700;
+      /* Extra bold */
+      margin: 20px 0;
+      text-align: center;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    /* Animation for new messages */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .bubble-row {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Responsive adjustments */
+    @media (max-height: 600px) {
+      .header {
+        margin-bottom: 10px;
+      }
+
+      .logo-wrapper {
+        width: 70px;
+        height: 70px;
+        margin-top: 5px;
+      }
+
+      .logo {
+        width: 50px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        /* Still readable (56px) for low height screens */
+        margin: 10px 0;
+      }
+
+      .main-container {
+        height: calc(100vh - 140px);
+      }
+
+      .bubble {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+
+      .input-area {
+        min-height: 40px;
+        padding: 8px 12px;
+      }
+
+      .circle-button {
+        width: 40px;
+        height: 40px;
+      }
+
+      .circle-button svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .chat-container {
+        padding: 15px;
+      }
+
+      .bubble {
+        max-width: 90%;
+      }
+    }
+    #interruptBtn {
+      display: none;
+      background-color: #194224;
+      color: white;
+      border: none;
+      font-size: 24px;
+      margin-top: 10px;
+      z-index: 1001;
+    }
+    #interruptBtn:hover {
+      background-color: #a51d1b;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header section -->
+  <div class="header">
+    <!-- Logo with ellipse -->
+    <div class="logo-wrapper">
+      <img src="logo.png" alt="SBP Logo" class="logo">
+    </div>
+    <h1>Complaint Bot</h1>
+  </div>
+
+  <!-- Main chat container -->
+  <div class="main-container" id="chat">
+    <div class="chat-container">
+      <div class="chat-messages">
+        <div style="display: none;" id="language-selection">
+        </div>
+        <div class="bubble-row bot">
+  <div class="bubble">
+    Please select your language:<br>
+    1 for English<br>
+    2 for Urdu (اردو)<br>
+    <div dir="rtl" lang="ur" style="margin-top: 8px;">
+      براہِ کرم اپنی زبان منتخب کریں:<br>
+      انگریزی کے لیے 1 دبائیں<br>
+      اُردو کے لیے 2 دبائیں
+    </div>
+  </div>
+</div>
+      </div>
+      <div class="input-wrapper">
+        <textarea class="input-area" placeholder="Type your message..." rows="1" id="message"></textarea>
+        <button id="sendBtn" class="circle-button send-btn" aria-label="Send message">
+          <svg viewBox="0 0 24 24">
+            <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+          </svg>
+        </button>
+        <button id="micBtn" class="circle-button mic-btn" aria-label="Voice message">
+          <img src="mic.png" alt="Mic" style="width: 20px; height: 20px;" />
+        </button>
+         <button id="interruptBtn" style="width: 20px; height: 20px;">⏹️</button>
+      </div>
+      <div id="recorded" style="margin-top: 10px;"></div>
+    </div>
+  </div>
+
+  <script src="html5-qrcode.min.js"></script> 
+  <script src="main4.js"></script>
+</body>
+
+</html>

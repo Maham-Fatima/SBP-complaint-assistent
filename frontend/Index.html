@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Complaint Bot</title>
+  <style>
+    body {
+      background-color: #194224;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /*.container {
+      text-align: center;
+    }*/
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: var(--chat-container-width);
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+
+    /* Logo ellipse */
+    .logo-wrapper {
+      background-color: white;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: -300px;
+    }
+
+    .logo {
+      width: 120px;
+      height: auto;
+    }
+
+    h1 {
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 3.75rem !important;
+      margin: 5px 0 !important;
+      color: white;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .options {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .option-card {
+      background-color: #FFFCF4;
+      border-radius: 20px;
+      padding: 20px;
+      width: 180px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .option-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .option-card img {
+      width: 200px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .option-card p {
+      font-size: 20px;
+      font-weight: bold;
+      color: #000;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header section -->
+  <div class="header">
+    <!-- Logo with ellipse -->
+    <div class="logo-wrapper">
+      <img src="logo.png" alt="SBP Logo" class="logo">
+    </div>
+    <h1>Complaint Bot</h1>
+  </div>
+
+    <div class="options">
+      <div class="option-card" onclick="location.href='chat.html'">
+        <img src="Chat.png" alt="Chat Option">
+        <p style="text-align: center;">Chat</p>
+      </div>
+      <div class="option-card" onclick="location.href='call.html'">
+        <img src="Call.png" alt="Call Option">
+        <p style="text-align: center;">Call</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
